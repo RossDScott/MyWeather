@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWeatherData } from './utils/api';
-import { getWalkForecast } from './utils/dataHelpers';
+import { getWalkForecast, getTodayHourly, getNowMinutely } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
 import Header from './components/Header';
 import DogWalkCard from './components/DogWalkCard';
+import NowCard from './components/NowCard';
+import Next24Card from './components/Next24Card';
 import DotIndicator from './components/DotIndicator';
 import styles from './App.module.css';
 
@@ -48,6 +50,8 @@ export default function App() {
   }, [page]);
 
   const walk = data ? getWalkForecast(data) : null;
+  const nowMinutely = data ? getNowMinutely(data) : [];
+  const todayHours = data ? getTodayHourly(data) : [];
 
   const currentWeatherCode = data?.daily?.weather_code?.[0] ?? null;
   const weatherType = codeToType(currentWeatherCode);
@@ -79,6 +83,8 @@ export default function App() {
           {page === 0 && (
             <>
               <DogWalkCard walk={walk} />
+              <NowCard slots={nowMinutely} />
+              <Next24Card hours={todayHours} />
             </>
           )}
 

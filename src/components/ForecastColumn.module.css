@@ -1,0 +1,43 @@
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 56px;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+
+.time {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.temp {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.divider {
+  width: 20px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+}
+
+.droplets {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
