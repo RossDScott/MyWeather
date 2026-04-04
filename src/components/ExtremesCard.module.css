@@ -1,0 +1,61 @@
+.section {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 10px;
+  letter-spacing: 0.02em;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  backdrop-filter: blur(var(--card-blur));
+  padding: 14px 16px;
+}
+
+.row {
+  display: flex;
+}
+
+.item {
+  flex: 1;
+  text-align: center;
+}
+
+.icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.when {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 1px;
+}
+
+.divider {
+  width: 1px;
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0 4px;
+}

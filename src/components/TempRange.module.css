@@ -1,0 +1,34 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.min {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 24px;
+  text-align: right;
+}
+
+.track {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+.bar {
+  position: absolute;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #5b9cf5, #f5a623);
+}
+
+.max {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  min-width: 24px;
+}
