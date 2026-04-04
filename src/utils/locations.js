@@ -23,3 +23,25 @@ export function loadActiveId() {
 export function saveActiveId(id) {
   localStorage.setItem(ACTIVE_KEY, id);
 }
+
+const CACHE_PREFIX = 'myweather-weather-';
+
+export function loadWeatherCache(locationId) {
+  try {
+    const raw = localStorage.getItem(CACHE_PREFIX + locationId);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.data && typeof parsed.timestamp === 'number') return parsed;
+  } catch { /* corrupted */ }
+  return null;
+}
+
+export function saveWeatherCache(locationId, data) {
+  try {
+    localStorage.setItem(CACHE_PREFIX + locationId, JSON.stringify({ data, timestamp: Date.now() }));
+  } catch { /* storage full */ }
+}
+
+export function clearWeatherCache(locationId) {
+  localStorage.removeItem(CACHE_PREFIX + locationId);
+}

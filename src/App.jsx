@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchWeatherData } from './utils/api';
 import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
-import { loadLocations, saveLocations, loadActiveId, saveActiveId } from './utils/locations';
+import { loadLocations, saveLocations, loadActiveId, saveActiveId, loadWeatherCache, saveWeatherCache, clearWeatherCache } from './utils/locations';
 import WeatherBackground from './components/WeatherBackground';
 import Header from './components/Header';
 import DogWalkCard from './components/DogWalkCard';
@@ -16,6 +16,7 @@ import ManageLocations from './components/ManageLocations';
 import styles from './App.module.css';
 
 const PAGES = 2;
+const CACHE_MAX_AGE = 15 * 60 * 1000; // 15 minutes
 
 export default function App() {
   const [locations, setLocations] = useState(loadLocations);
@@ -28,9 +29,16 @@ export default function App() {
   const [showPicker, setShowPicker] = useState(false);
   const [showManage, setShowManage] = useState(() => loadLocations().length === 0);
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(() => {
+    if (!activeId) return null;
+    return loadWeatherCache(activeId)?.data ?? null;
+  });
   const [loading, setLoading] = useState(true);
-  const [lastUpdated, setLastUpdated] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(() => {
+    if (!activeId) return null;
+    const cached = loadWeatherCache(activeId);
+    return cached ? new Date(cached.timestamp) : null;
+  });
   const [page, setPage] = useState(0);
   const touchRef = useRef({ startX: 0, startY: 0, inScroller: false });
 
@@ -41,18 +49,40 @@ export default function App() {
     setLoading(true);
     const json = await fetchWeatherData(activeLocation.latitude, activeLocation.longitude);
     setData(json);
-    if (json) setLastUpdated(new Date());
+    if (json) {
+      setLastUpdated(new Date());
+      saveWeatherCache(activeLocation.id, json);
+    }
     setLoading(false);
   }, [activeLocation]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!activeLocation) return;
+
+    const cached = loadWeatherCache(activeLocation.id);
+    if (cached?.data) {
+      setData(cached.data);
+      setLastUpdated(new Date(cached.timestamp));
+    } else {
+      setData(null);
+      setLastUpdated(null);
+    }
+
+    const isFresh = cached && (Date.now() - cached.timestamp < CACHE_MAX_AGE);
+    if (isFresh) {
+      setLoading(false);
+    } else {
+      fetchData();
+    }
+  }, [activeLocation, fetchData]);
 
   const handleUpdateLocations = useCallback((next) => {
+    locations
+      .filter((l) => !next.find((n) => n.id === l.id))
+      .forEach((l) => clearWeatherCache(l.id));
     setLocations(next);
     saveLocations(next);
-  }, []);
+  }, [locations]);
 
   const handleSelectLocation = useCallback((id) => {
     setActiveId(id);
