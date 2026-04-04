@@ -21,6 +21,17 @@ export async function fetchWeatherData(lat, lon) {
   }
 }
 
+export async function reverseGeocode(lat, lon) {
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`;
+  const res = await fetch(url, { headers: { 'User-Agent': 'MyWeather/1.0' } });
+  if (!res.ok) throw new Error('Reverse geocode failed');
+  const json = await res.json();
+  const a = json.address || {};
+  const city = a.city || a.town || a.village || a.hamlet || 'Unknown';
+  const region = a.state || a.country || '';
+  return region ? `${city}, ${region}` : city;
+}
+
 export async function searchLocations(query) {
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=en&format=json`;
   const res = await fetch(url);

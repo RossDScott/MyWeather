@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { searchLocations } from '../utils/api';
+import { searchLocations, reverseGeocode } from '../utils/api';
 import styles from './ManageLocations.module.css';
 
 export default function ManageLocations({ locations, activeId, onChange, onActiveChange, onClose }) {
@@ -7,6 +7,7 @@ export default function ManageLocations({ locations, activeId, onChange, onActiv
   const [results, setResults] = useState([]);
   const [searchError, setSearchError] = useState(null);
   const [dragIdx, setDragIdx] = useState(null);
+  const [geoLoading, setGeoLoading] = useState(false);
   const debounceRef = useRef(null);
 
   const doSearch = useCallback(async (q) => {
@@ -53,6 +54,29 @@ export default function ManageLocations({ locations, activeId, onChange, onActiv
     setDragIdx(null);
   };
 
+  const handleLocate = useCallback(() => {
+    if (!navigator.geolocation) { setQuery('My Location'); return; }
+    setGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = Math.round(pos.coords.latitude * 10000) / 10000;
+        const lon = Math.round(pos.coords.longitude * 10000) / 10000;
+        try {
+          const name = await reverseGeocode(lat, lon);
+          setQuery(name);
+        } catch {
+          setQuery('My Location');
+        }
+        setGeoLoading(false);
+      },
+      () => {
+        setQuery('My Location');
+        setGeoLoading(false);
+      },
+      { timeout: 10000 },
+    );
+  }, []);
+
   return (
     <div className={styles.screen}>
       <div className={styles.header}>
@@ -61,13 +85,23 @@ export default function ManageLocations({ locations, activeId, onChange, onActiv
       </div>
 
       <div className={styles.searchWrap}>
-        <input
-          type="text"
-          placeholder="Search for a city..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className={styles.searchInput}
-        />
+        <div className={styles.searchBox}>
+          <input
+            type="text"
+            placeholder="Search for a city..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className={styles.searchInput}
+          />
+          <button
+            className={styles.locateBtn}
+            onClick={handleLocate}
+            disabled={geoLoading}
+            title="Use current location"
+          >
+            {geoLoading ? '...' : '\uD83D\uDCCD'}
+          </button>
+        </div>
 
         {results.length > 0 && (
           <div className={styles.searchResults}>

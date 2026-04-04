@@ -35,10 +35,14 @@
   padding: 0 20px;
 }
 
+.searchBox {
+  position: relative;
+  margin-top: 16px;
+}
+
 .searchInput {
   width: 100%;
-  padding: 12px 14px;
-  margin-top: 16px;
+  padding: 12px 40px 12px 14px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -51,6 +55,25 @@
 
 .searchInput::placeholder {
   color: rgba(255, 255, 255, 0.3);
+}
+
+.locateBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.locateBtn:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 
 .searchResults {
