@@ -4,7 +4,7 @@
   "description": "Personal weather forecast for Yeovil, Somerset",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1e2433",
+  "background_color": "#155f9f",
   "theme_color": "#1e2433",
   "icons": [
     {
