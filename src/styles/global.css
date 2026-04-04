@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #1e2433;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+:root {
+  /* Primary accent */
+  --color-blue: #5b9cf5;
+  --color-red: #f55b5b;
+  --color-orange: #f5a623;
+
+  /* Card styling */
+  --card-bg: linear-gradient(135deg, rgba(91,156,245,0.22) 0%, rgba(91,156,245,0.1) 100%);
+  --card-border: rgba(91,156,245,0.25);
+  --card-radius: 14px;
+  --card-blur: 8px;
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-muted: rgba(255,255,255,0.5);
+  --text-faint: rgba(255,255,255,0.4);
+  --text-dimmed: rgba(255,255,255,0.25);
+
+  /* Dividers */
+  --divider-light: rgba(255,255,255,0.08);
+  --divider-faint: rgba(255,255,255,0.04);
+
+  /* Layout */
+  --max-width: 420px;
+  --container-padding: 16px;
+}
+
+/* Scrollbar hiding utility */
+.hideScrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hideScrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Loader animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
