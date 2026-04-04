@@ -21,19 +21,13 @@ export function getWalkForecast(data) {
   const targetStr = localDateHourStr(targetDate);
   const idx = data.hourly.time.findIndex((t) => t.startsWith(targetStr));
   if (idx === -1) return null;
-  const indices = [idx, idx + 1].filter(
-    (i) => i >= 0 && i < data.hourly.time.length
-  );
-  const temps = indices.map((i) => data.hourly.temperature_2m[i]);
-  const rainChances = indices.map((i) => data.hourly.precipitation_probability[i]);
-  const winds = indices.map((i) => data.hourly.wind_speed_10m[i]);
   const weatherCode = data.hourly.weather_code[idx];
   const isToday = targetDate.toDateString() === now.toDateString();
   return {
     label: isToday ? 'Today' : 'Tomorrow',
-    temp: Math.round(temps[0]),
-    rainChance: Math.max(...rainChances),
-    wind: Math.round(winds[0]),
+    temp: Math.round(data.hourly.temperature_2m[idx]),
+    rainChance: data.hourly.precipitation_probability[idx],
+    wind: Math.round(data.hourly.wind_speed_10m[idx]),
     weather: getWeather(weatherCode),
     time: '12pm\u20131pm',
   };
