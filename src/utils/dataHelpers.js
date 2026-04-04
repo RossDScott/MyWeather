@@ -1,6 +1,15 @@
 import { getWeather } from './weatherCodes';
 import { parseISO, formatDay, formatHour, formatMinute } from './formatters';
 
+// Format a Date in local time to match API time strings (Europe/London)
+const pad2 = (n) => String(n).padStart(2, '0');
+function localDateStr(d) {
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+function localDateHourStr(d) {
+  return `${localDateStr(d)}T${pad2(d.getHours())}`;
+}
+
 export function getWalkForecast(data) {
   if (!data?.hourly) return null;
   const now = new Date();
@@ -9,7 +18,7 @@ export function getWalkForecast(data) {
   if (now.getHours() >= 14) {
     targetDate.setDate(targetDate.getDate() + 1);
   }
-  const targetStr = targetDate.toISOString().slice(0, 13);
+  const targetStr = localDateHourStr(targetDate);
   const idx = data.hourly.time.findIndex((t) => t.startsWith(targetStr));
   if (idx === -1) return null;
   const indices = [idx - 1, idx, idx + 1].filter(
@@ -81,7 +90,7 @@ export function getWeekTemps(data) {
 export function getTodayHourly(data) {
   if (!data?.hourly) return [];
   const now = new Date();
-  const nowStr = now.toISOString().slice(0, 13);
+  const nowStr = localDateHourStr(now);
   const startIdx = data.hourly.time.findIndex((t) => t.startsWith(nowStr));
   if (startIdx === -1) return [];
   const hours = [];
@@ -103,10 +112,8 @@ export function getTodayHourly(data) {
 export function getNowMinutely(data) {
   if (!data?.minutely_15) return [];
   const now = new Date();
-  const nowH = now.getHours();
   const nowM = Math.floor(now.getMinutes() / 15) * 15;
-  const dateStr = now.toISOString().slice(0, 10);
-  const nowStr = `${dateStr}T${String(nowH).padStart(2, '0')}:${String(nowM).padStart(2, '0')}`;
+  const nowStr = `${localDateStr(now)}T${pad2(now.getHours())}:${pad2(nowM)}`;
 
   const startIdx = data.minutely_15.time.findIndex((t) => t === nowStr);
   if (startIdx === -1) return [];

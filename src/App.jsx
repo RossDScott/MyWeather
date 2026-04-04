@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchWeatherData } from './utils/api';
 import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
@@ -52,13 +52,13 @@ export default function App() {
     }
   }, [page]);
 
-  const walk = data ? getWalkForecast(data) : null;
-  const nowMinutely = data ? getNowMinutely(data) : [];
-  const todayHours = data ? getTodayHourly(data) : [];
-  const weekExtremes = data ? getWeekExtremes(data) : null;
-  const weekTemps = data ? getWeekTemps(data) : [];
-  const absMin = weekTemps.length ? Math.min(...weekTemps.map((d) => d.min)) : 0;
-  const absMax = weekTemps.length ? Math.max(...weekTemps.map((d) => d.max)) : 20;
+  const walk = useMemo(() => data ? getWalkForecast(data) : null, [data]);
+  const nowMinutely = useMemo(() => data ? getNowMinutely(data) : [], [data]);
+  const todayHours = useMemo(() => data ? getTodayHourly(data) : [], [data]);
+  const weekExtremes = useMemo(() => data ? getWeekExtremes(data) : null, [data]);
+  const weekTemps = useMemo(() => data ? getWeekTemps(data) : [], [data]);
+  const absMin = useMemo(() => weekTemps.length ? Math.min(...weekTemps.map((d) => d.min)) : 0, [weekTemps]);
+  const absMax = useMemo(() => weekTemps.length ? Math.max(...weekTemps.map((d) => d.max)) : 20, [weekTemps]);
 
   const currentWeatherCode = data?.daily?.weather_code?.[0] ?? null;
   const weatherType = codeToType(currentWeatherCode);
