@@ -75,6 +75,16 @@ export default function WeatherBackground({ weatherType }) {
     const particles = initParticles(w, h, weatherType);
     let flash = 0;
 
+    // Reusable offscreen canvas for overcast compositing
+    let offscreen = null;
+    let oc = null;
+    if (weatherType === 'overcast') {
+      offscreen = document.createElement('canvas');
+      offscreen.width = w;
+      offscreen.height = h;
+      oc = offscreen.getContext('2d');
+    }
+
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
 
@@ -128,10 +138,7 @@ export default function WeatherBackground({ weatherType }) {
           d.y += Math.sin(d.angle) * d.speed * 0.5;
         });
       } else if (weatherType === 'overcast') {
-        const offscreen = document.createElement('canvas');
-        offscreen.width = w;
-        offscreen.height = h;
-        const oc = offscreen.getContext('2d');
+        oc.clearRect(0, 0, w, h);
         particles.forEach((d) => {
           d.blobs.forEach((b) => {
             oc.beginPath();
