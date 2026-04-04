@@ -1,0 +1,66 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+}
+
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #1a2540 0%, #0f1724 100%);
+  border-radius: 20px 20px 0 0;
+  border: 1px solid rgba(91, 156, 245, 0.2);
+  border-bottom: none;
+  z-index: 201;
+  max-height: 55vh;
+  overflow: auto;
+}
+
+.handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 10px auto 16px;
+}
+
+.content {
+  padding: 0 20px 20px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.name {
+  font-size: 15px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #5b9cf5;
+}
+
+.manageBtn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: rgba(91, 156, 245, 0.15);
+  border: 1px solid rgba(91, 156, 245, 0.25);
+  border-radius: 12px;
+  color: #5b9cf5;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}

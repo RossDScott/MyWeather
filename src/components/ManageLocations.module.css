@@ -1,0 +1,173 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  background: #0f1724;
+  z-index: 300;
+  overflow: auto;
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.headerTitle {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.doneBtn {
+  background: none;
+  border: none;
+  color: #5b9cf5;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.searchWrap {
+  padding: 0 20px;
+}
+
+.searchBox {
+  position: relative;
+  margin-top: 16px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 40px 12px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.locateBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.locateBtn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.searchResults {
+  margin-top: 8px;
+  background: rgba(91, 156, 245, 0.08);
+  border: 1px solid rgba(91, 156, 245, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.searchRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+}
+
+.searchRow:last-child {
+  border-bottom: none;
+}
+
+.searchName {
+  font-size: 14px;
+}
+
+.searchPlus {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.searchMsg {
+  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.savedWrap {
+  padding: 16px 20px;
+}
+
+.savedLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.manageRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid;
+  margin-bottom: 6px;
+}
+
+.rowLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dragHandle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.25);
+  cursor: grab;
+  user-select: none;
+}
+
+.locName {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.defaultBadge {
+  font-size: 10px;
+  color: #5b9cf5;
+  margin-left: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  color: #f55b5b;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-family: inherit;
+}
