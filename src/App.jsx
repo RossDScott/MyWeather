@@ -1,13 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWeatherData } from './utils/api';
 import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
+import Header from './components/Header';
+import DotIndicator from './components/DotIndicator';
 import styles from './App.module.css';
+
+const PAGES = 2;
 
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [page, setPage] = useState(0);
+  const touchRef = useRef({ startX: 0, startY: 0, inScroller: false });
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -20,6 +26,25 @@ export default function App() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleTouchStart = useCallback((e) => {
+    const el = e.target.closest('.todayScroll');
+    touchRef.current = {
+      startX: e.touches[0].clientX,
+      startY: e.touches[0].clientY,
+      inScroller: !!el,
+    };
+  }, []);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (touchRef.current.inScroller) return;
+    const dx = e.changedTouches[0].clientX - touchRef.current.startX;
+    const dy = e.changedTouches[0].clientY - touchRef.current.startY;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0 && page < PAGES - 1) setPage((p) => p + 1);
+      if (dx > 0 && page > 0) setPage((p) => p - 1);
+    }
+  }, [page]);
 
   const walk = data ? getWalkForecast(data) : null;
   const todayHours = data ? getTodayHourly(data) : [];
@@ -46,23 +71,42 @@ export default function App() {
       className={styles.shell}
       style={{ background: BG_GRADIENTS[weatherType] || BG_GRADIENTS.overcast }}
     >
-      <div className={styles.container}>
-        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>
-          Weather data loaded — {weatherType} conditions
-        </p>
-        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 8 }}>
-          {walk && `Dog walk: ${walk.label} ${walk.time} — ${walk.temp}°C, ${walk.rainChance}% rain, ${walk.wind} km/h wind`}
-        </p>
-        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 4 }}>
-          {nowMinutely.length} × 15-min slots · {todayHours.length} hourly slots · {weekTemps.length} days
-        </p>
-        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 4 }}>
-          {weekExtremes && `Peak wind: ${weekExtremes.peakWind.speed} km/h (${weekExtremes.peakWind.label})`}
-        </p>
-        <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 11, marginTop: 12 }}>
-          Last updated: {lastUpdated?.toLocaleTimeString()}
-        </p>
+      <div
+        className={styles.container}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <Header lastUpdated={lastUpdated} onRefresh={fetchData} />
+
+        <div className={styles.pageContainer}>
+          {page === 0 && (
+            <div>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>
+                Page 1: Now
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 8 }}>
+                {walk && `🐕 ${walk.label} ${walk.time} — ${walk.temp}°C, ${walk.rainChance}% rain`}
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 4 }}>
+                {nowMinutely.length} × 15-min slots · {todayHours.length} hourly slots
+              </p>
+            </div>
+          )}
+
+          {page === 1 && (
+            <div>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>
+                Page 2: Week
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 8 }}>
+                {weekTemps.length} days · {weekExtremes && `Peak wind: ${weekExtremes.peakWind.speed} km/h`}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
+
+      <DotIndicator page={page} onPageChange={setPage} />
     </div>
   );
 }
