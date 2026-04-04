@@ -22,12 +22,12 @@ export async function fetchWeatherData(lat, lon) {
 }
 
 export async function reverseGeocode(lat, lon) {
-  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`;
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=16`;
   const res = await fetch(url, { headers: { 'User-Agent': 'MyWeather/1.0' } });
   if (!res.ok) throw new Error('Reverse geocode failed');
   const json = await res.json();
   const a = json.address || {};
-  return a.city || a.town || a.village || a.hamlet || 'Unknown';
+  return a.city || a.town || a.village || a.hamlet || a.county || a.suburb || json.name || 'Unknown';
 }
 
 export async function searchLocations(query) {
