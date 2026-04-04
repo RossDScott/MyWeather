@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWeatherData } from './utils/api';
-import { getWalkForecast, getTodayHourly, getNowMinutely } from './utils/dataHelpers';
+import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
 import Header from './components/Header';
 import DogWalkCard from './components/DogWalkCard';
 import NowCard from './components/NowCard';
 import Next24Card from './components/Next24Card';
+import ExtremesCard from './components/ExtremesCard';
+import WeekForecast from './components/WeekForecast';
 import DotIndicator from './components/DotIndicator';
 import styles from './App.module.css';
 
@@ -52,6 +54,10 @@ export default function App() {
   const walk = data ? getWalkForecast(data) : null;
   const nowMinutely = data ? getNowMinutely(data) : [];
   const todayHours = data ? getTodayHourly(data) : [];
+  const weekExtremes = data ? getWeekExtremes(data) : null;
+  const weekTemps = data ? getWeekTemps(data) : [];
+  const absMin = weekTemps.length ? Math.min(...weekTemps.map((d) => d.min)) : 0;
+  const absMax = weekTemps.length ? Math.max(...weekTemps.map((d) => d.max)) : 20;
 
   const currentWeatherCode = data?.daily?.weather_code?.[0] ?? null;
   const weatherType = codeToType(currentWeatherCode);
@@ -89,11 +95,10 @@ export default function App() {
           )}
 
           {page === 1 && (
-            <div>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>
-                Page 2: Week — coming soon
-              </p>
-            </div>
+            <>
+              <ExtremesCard extremes={weekExtremes} />
+              <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} />
+            </>
           )}
         </div>
       </div>
