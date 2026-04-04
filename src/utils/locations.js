@@ -1,5 +1,3 @@
-import { DEFAULT_LOCATION } from './constants';
-
 const LOCATIONS_KEY = 'myweather-locations';
 const ACTIVE_KEY = 'myweather-active-location';
 
@@ -11,7 +9,7 @@ export function loadLocations() {
       if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
   } catch { /* ignore */ }
-  return [DEFAULT_LOCATION];
+  return [];
 }
 
 export function saveLocations(locations) {

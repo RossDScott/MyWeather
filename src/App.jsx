@@ -22,10 +22,11 @@ export default function App() {
   const [activeId, setActiveId] = useState(() => {
     const saved = loadActiveId();
     const locs = loadLocations();
+    if (locs.length === 0) return null;
     return saved && locs.find((l) => l.id === saved) ? saved : locs[0].id;
   });
   const [showPicker, setShowPicker] = useState(false);
-  const [showManage, setShowManage] = useState(false);
+  const [showManage, setShowManage] = useState(() => loadLocations().length === 0);
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,15 +34,16 @@ export default function App() {
   const [page, setPage] = useState(0);
   const touchRef = useRef({ startX: 0, startY: 0, inScroller: false });
 
-  const activeLocation = locations.find((l) => l.id === activeId) || locations[0];
+  const activeLocation = locations.find((l) => l.id === activeId) || locations[0] || null;
 
   const fetchData = useCallback(async () => {
+    if (!activeLocation) return;
     setLoading(true);
     const json = await fetchWeatherData(activeLocation.latitude, activeLocation.longitude);
     setData(json);
-    setLastUpdated(new Date());
+    if (json) setLastUpdated(new Date());
     setLoading(false);
-  }, [activeLocation.latitude, activeLocation.longitude]);
+  }, [activeLocation]);
 
   useEffect(() => {
     fetchData();
@@ -92,6 +94,31 @@ export default function App() {
 
   const currentWeatherCode = data?.daily?.weather_code?.[0] ?? null;
   const weatherType = codeToType(currentWeatherCode);
+
+  const handleCloseManage = useCallback(() => {
+    setShowManage(false);
+    setShowPicker(false);
+    // Auto-select first location if none active
+    if (!activeId && locations.length > 0) {
+      setActiveId(locations[0].id);
+      saveActiveId(locations[0].id);
+    }
+  }, [activeId, locations]);
+
+  // No location set — show manage screen
+  if (!activeLocation || locations.length === 0) {
+    return (
+      <div className={styles.shell} style={{ background: BG_GRADIENTS.overcast }}>
+        <ManageLocations
+          locations={locations}
+          activeId={activeId}
+          onChange={handleUpdateLocations}
+          onActiveChange={handleActiveChange}
+          onClose={handleCloseManage}
+        />
+      </div>
+    );
+  }
 
   if (loading && !data) {
     return (
@@ -158,7 +185,7 @@ export default function App() {
           activeId={activeId}
           onChange={handleUpdateLocations}
           onActiveChange={handleActiveChange}
-          onClose={() => { setShowManage(false); setShowPicker(false); }}
+          onClose={handleCloseManage}
         />
       )}
     </div>
