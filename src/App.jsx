@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWeatherData } from './utils/api';
-import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps } from './utils/dataHelpers';
+import { getWalkForecast } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
 import Header from './components/Header';
+import DogWalkCard from './components/DogWalkCard';
 import DotIndicator from './components/DotIndicator';
 import styles from './App.module.css';
 
@@ -47,10 +48,6 @@ export default function App() {
   }, [page]);
 
   const walk = data ? getWalkForecast(data) : null;
-  const todayHours = data ? getTodayHourly(data) : [];
-  const nowMinutely = data ? getNowMinutely(data) : [];
-  const weekExtremes = data ? getWeekExtremes(data) : null;
-  const weekTemps = data ? getWeekTemps(data) : [];
 
   const currentWeatherCode = data?.daily?.weather_code?.[0] ?? null;
   const weatherType = codeToType(currentWeatherCode);
@@ -80,26 +77,15 @@ export default function App() {
 
         <div className={styles.pageContainer}>
           {page === 0 && (
-            <div>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>
-                Page 1: Now
-              </p>
-              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 8 }}>
-                {walk && `🐕 ${walk.label} ${walk.time} — ${walk.temp}°C, ${walk.rainChance}% rain`}
-              </p>
-              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 4 }}>
-                {nowMinutely.length} × 15-min slots · {todayHours.length} hourly slots
-              </p>
-            </div>
+            <>
+              <DogWalkCard walk={walk} />
+            </>
           )}
 
           {page === 1 && (
             <div>
               <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14 }}>
-                Page 2: Week
-              </p>
-              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 8 }}>
-                {weekTemps.length} days · {weekExtremes && `Peak wind: ${weekExtremes.peakWind.speed} km/h`}
+                Page 2: Week — coming soon
               </p>
             </div>
           )}
