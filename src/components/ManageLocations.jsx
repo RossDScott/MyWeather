@@ -99,7 +99,7 @@ export default function ManageLocations({ locations, activeId, onChange, onActiv
             disabled={geoLoading}
             title="Use current location"
           >
-            {geoLoading ? '...' : '\uD83D\uDCCD'}
+            {geoLoading ? '...' : '\u2295'}
           </button>
         </div>
 
