@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { fetchWeatherData } from './utils/api';
 import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
+import WeatherBackground from './components/WeatherBackground';
 import Header from './components/Header';
 import DogWalkCard from './components/DogWalkCard';
 import NowCard from './components/NowCard';
@@ -78,6 +79,7 @@ export default function App() {
       className={styles.shell}
       style={{ background: BG_GRADIENTS[weatherType] || BG_GRADIENTS.overcast }}
     >
+      <WeatherBackground weatherType={weatherType} />
       <div
         className={styles.container}
         onTouchStart={handleTouchStart}
