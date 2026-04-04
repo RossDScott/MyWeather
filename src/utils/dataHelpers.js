@@ -21,7 +21,7 @@ export function getWalkForecast(data) {
   const targetStr = localDateHourStr(targetDate);
   const idx = data.hourly.time.findIndex((t) => t.startsWith(targetStr));
   if (idx === -1) return null;
-  const indices = [idx - 1, idx, idx + 1].filter(
+  const indices = [idx, idx + 1].filter(
     (i) => i >= 0 && i < data.hourly.time.length
   );
   const temps = indices.map((i) => data.hourly.temperature_2m[i]);
@@ -31,11 +31,11 @@ export function getWalkForecast(data) {
   const isToday = targetDate.toDateString() === now.toDateString();
   return {
     label: isToday ? 'Today' : 'Tomorrow',
-    temp: Math.round(temps[1]),
+    temp: Math.round(temps[0]),
     rainChance: Math.max(...rainChances),
-    wind: Math.round(winds[1]),
+    wind: Math.round(winds[0]),
     weather: getWeather(weatherCode),
-    time: '11am\u20131pm',
+    time: '12pm\u20131pm',
   };
 }
 
