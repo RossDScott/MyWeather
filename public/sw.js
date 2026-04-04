@@ -1,4 +1,4 @@
-const CACHE_NAME = 'myweather-v1';
+const CACHE_NAME = 'myweather-v2';
 const API_CACHE = 'myweather-api-v1';
 const API_HOST = 'api.open-meteo.com';
 
@@ -42,9 +42,15 @@ self.addEventListener('fetch', (event) => {
         .catch(() => caches.match(event.request))
     );
   } else if (event.request.mode === 'navigate') {
-    // Cache-first for navigation
+    // Network-first for navigation — always get latest HTML, fall back to cache offline
     event.respondWith(
-      caches.match(event.request).then((cached) => cached || fetch(event.request))
+      fetch(event.request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
     );
   }
 });
