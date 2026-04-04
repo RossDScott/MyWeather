@@ -1,7 +1,4 @@
-import { DEFAULT_LOCATION } from './constants';
-
-const API_PARAMS = [
-  `latitude=${DEFAULT_LOCATION.latitude}&longitude=${DEFAULT_LOCATION.longitude}`,
+const SHARED_PARAMS = [
   'hourly=temperature_2m,precipitation_probability,precipitation,wind_speed_10m,weather_code',
   'minutely_15=temperature_2m,precipitation_probability,precipitation,wind_speed_10m,weather_code',
   'daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,precipitation_sum,wind_speed_10m_max',
@@ -10,7 +7,9 @@ const API_PARAMS = [
   'forecast_days=7',
 ].join('&');
 
-const API_URL = `https://api.open-meteo.com/v1/forecast?${API_PARAMS}`;
+function buildApiUrl(lat, lon) {
+  return `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&${SHARED_PARAMS}`;
+}
 
 export function generateMockData() {
   const now = new Date();
@@ -129,12 +128,25 @@ export function generateMockData() {
   };
 }
 
-export async function fetchWeatherData() {
+export async function fetchWeatherData(lat, lon) {
   try {
-    const res = await fetch(API_URL);
+    const res = await fetch(buildApiUrl(lat, lon));
     if (!res.ok) throw new Error(`API error ${res.status}`);
     return await res.json();
   } catch {
     return generateMockData();
   }
+}
+
+export async function searchLocations(query) {
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=en&format=json`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Search unavailable');
+  const json = await res.json();
+  return (json.results || []).map((r) => ({
+    id: `${r.latitude}_${r.longitude}`,
+    name: r.admin1 ? `${r.name}, ${r.admin1}` : `${r.name}, ${r.country}`,
+    latitude: r.latitude,
+    longitude: r.longitude,
+  }));
 }
