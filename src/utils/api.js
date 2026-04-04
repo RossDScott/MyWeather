@@ -27,9 +27,7 @@ export async function reverseGeocode(lat, lon) {
   if (!res.ok) throw new Error('Reverse geocode failed');
   const json = await res.json();
   const a = json.address || {};
-  const city = a.city || a.town || a.village || a.hamlet || 'Unknown';
-  const region = a.state || a.country || '';
-  return region ? `${city}, ${region}` : city;
+  return a.city || a.town || a.village || a.hamlet || 'Unknown';
 }
 
 export async function searchLocations(query) {
