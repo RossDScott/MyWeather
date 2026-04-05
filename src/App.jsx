@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchWeatherData } from './utils/api';
 import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps, getCurrentWeatherCode } from './utils/dataHelpers';
-import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
+import { codeToType, BG_GRADIENTS, EFFECT_LAYERS } from './utils/weatherCodes';
 import { loadLocations, saveLocations, loadActiveId, saveActiveId, loadWeatherCache, saveWeatherCache, clearWeatherCache } from './utils/locations';
 import WeatherBackground from './components/WeatherBackground';
 import Header from './components/Header';
@@ -124,6 +124,7 @@ export default function App() {
 
   const currentWeatherCode = useMemo(() => data ? getCurrentWeatherCode(data) : null, [data]);
   const weatherType = codeToType(currentWeatherCode);
+  const effectLayers = EFFECT_LAYERS[weatherType] || ['clouds'];
 
   const handleCloseManage = useCallback(() => {
     setShowManage(false);
@@ -166,7 +167,7 @@ export default function App() {
       className={styles.shell}
       style={{ background: BG_GRADIENTS[weatherType] || BG_GRADIENTS.overcast }}
     >
-      <WeatherBackground weatherType={weatherType} />
+      <WeatherBackground effectLayers={effectLayers} />
       <div
         className={styles.container}
         onTouchStart={handleTouchStart}
