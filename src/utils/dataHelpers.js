@@ -127,6 +127,17 @@ export function getNowMinutely(data) {
   return slots;
 }
 
+export function getCurrentWeatherCode(data) {
+  if (data?.minutely_15) {
+    const now = new Date();
+    const nowM = Math.floor(now.getMinutes() / 15) * 15;
+    const nowStr = `${localDateStr(now)}T${pad2(now.getHours())}:${pad2(nowM)}`;
+    const idx = data.minutely_15.time.findIndex((t) => t === nowStr);
+    if (idx !== -1) return data.minutely_15.weather_code[idx];
+  }
+  return data?.daily?.weather_code?.[0] ?? null;
+}
+
 export function getHourlyDetail(data, dayIndex) {
   if (!data?.hourly || dayIndex == null) return [];
   const dayStr = data.daily.time[dayIndex];

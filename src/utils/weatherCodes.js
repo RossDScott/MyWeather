@@ -42,8 +42,8 @@ export function codeToType(code) {
 
 export const BG_GRADIENTS = {
   sunny: 'linear-gradient(180deg, #1a3a5c 0%, #2d6a9f 30%, #f4a942 90%, #e8792e 100%)',
-  rainy: 'linear-gradient(180deg, #1a1f2e 0%, #2c3547 40%, #3d4a5c 80%, #4a5568 100%)',
+  rainy: 'linear-gradient(180deg, #252b3b 0%, #3a4559 40%, #4d5a6c 80%, #5a6578 100%)',
   snowy: 'linear-gradient(180deg, #2a3040 0%, #4a5568 40%, #8b9bb5 80%, #c4cfe0 100%)',
-  overcast: 'linear-gradient(180deg, #1e2433 0%, #374151 50%, #4b5563 100%)',
-  stormy: 'linear-gradient(180deg, #0d1117 0%, #1a1f2e 30%, #2d1f3d 70%, #3d2a4a 100%)',
+  overcast: 'linear-gradient(180deg, #2a3040 0%, #435063 50%, #5b6577 100%)',
+  stormy: 'linear-gradient(180deg, #191f27 0%, #262d3d 30%, #3d2f4d 70%, #4d3a5a 100%)',
 };
