@@ -64,3 +64,29 @@ export const BG_GRADIENTS = {
   'snowy':         'linear-gradient(180deg, #2a3040 0%, #4a5568 40%, #8b9bb5 80%, #c4cfe0 100%)',
   'stormy':        'linear-gradient(180deg, #191f27 0%, #262d3d 30%, #3d2f4d 70%, #4d3a5a 100%)',
 };
+
+const CARD_TINTS = {
+  'clear': [
+    { '--card-bg': 'linear-gradient(135deg, rgba(40,80,140,0.30) 0%, rgba(40,80,140,0.18) 100%)', '--card-border': 'rgba(60,120,200,0.30)', '--card-blur': '10px' },
+    { '--card-bg': 'linear-gradient(135deg, rgba(30,60,120,0.42) 0%, rgba(30,60,120,0.28) 100%)', '--card-border': 'rgba(50,100,180,0.35)', '--card-blur': '12px' },
+    { '--card-bg': 'linear-gradient(135deg, rgba(20,45,100,0.55) 0%, rgba(20,45,100,0.38) 100%)', '--card-border': 'rgba(40,85,160,0.40)', '--card-blur': '14px' },
+  ],
+  'mostly-clear': [
+    { '--card-bg': 'linear-gradient(135deg, rgba(40,80,140,0.28) 0%, rgba(40,80,140,0.16) 100%)', '--card-border': 'rgba(60,120,200,0.28)', '--card-blur': '10px' },
+    { '--card-bg': 'linear-gradient(135deg, rgba(30,60,120,0.38) 0%, rgba(30,60,120,0.24) 100%)', '--card-border': 'rgba(50,100,180,0.32)', '--card-blur': '12px' },
+    { '--card-bg': 'linear-gradient(135deg, rgba(20,45,100,0.48) 0%, rgba(20,45,100,0.32) 100%)', '--card-border': 'rgba(40,85,160,0.36)', '--card-blur': '14px' },
+  ],
+  'partly-cloudy': [
+    { '--card-bg': 'linear-gradient(135deg, rgba(40,80,140,0.30) 0%, rgba(40,80,140,0.16) 100%)', '--card-border': 'rgba(60,120,200,0.30)', '--card-blur': '10px' },
+  ],
+  'snowy': [
+    { '--card-bg': 'linear-gradient(135deg, rgba(30,60,120,0.34) 0%, rgba(30,60,120,0.20) 100%)', '--card-border': 'rgba(50,100,180,0.32)', '--card-blur': '10px' },
+  ],
+};
+
+export function getCardTint(weatherType, index) {
+  const tints = CARD_TINTS[weatherType];
+  if (!tints) return null;
+  if (tints.length === 1) return tints[0];
+  return tints[Math.min(index, tints.length - 1)];
+}
