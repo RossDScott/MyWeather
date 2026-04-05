@@ -1,10 +1,10 @@
 const SHARED_PARAMS = [
   'hourly=temperature_2m,precipitation_probability,precipitation,wind_speed_10m,weather_code',
   'minutely_15=temperature_2m,precipitation_probability,precipitation,wind_speed_10m,weather_code',
-  'daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,precipitation_sum,wind_speed_10m_max',
+  'daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,sunrise,sunset',
   'wind_speed_unit=kmh',
   'timezone=Europe/London',
-  'forecast_days=7',
+  'forecast_days=10',
 ].join('&');
 
 function buildApiUrl(lat, lon) {

@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchWeatherData } from './utils/api';
-import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps, getCurrentWeatherCode } from './utils/dataHelpers';
+import { getWalkForecast, getWalkMinutely, getTodayCombined, getWeekExtremes, getWeekTemps, getCurrentWeatherCode, isCurrentlyNight } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS, EFFECT_LAYERS, getCardTint } from './utils/weatherCodes';
 import { loadLocations, saveLocations, loadActiveId, saveActiveId, loadWeatherCache, saveWeatherCache, clearWeatherCache } from './utils/locations';
 import WeatherBackground from './components/WeatherBackground';
 import Header from './components/Header';
 import DogWalkCard from './components/DogWalkCard';
-import NowCard from './components/NowCard';
-import Next24Card from './components/Next24Card';
+import TodayCard from './components/TodayCard';
 import ExtremesCard from './components/ExtremesCard';
 import WeekForecast from './components/WeekForecast';
 import DotIndicator from './components/DotIndicator';
@@ -115,15 +114,17 @@ export default function App() {
   }, [page]);
 
   const walk = useMemo(() => data ? getWalkForecast(data) : null, [data]);
-  const nowMinutely = useMemo(() => data ? getNowMinutely(data) : [], [data]);
-  const todayHours = useMemo(() => data ? getTodayHourly(data) : [], [data]);
+  const walkMinutely = useMemo(() => data ? getWalkMinutely(data) : [], [data]);
+  const todaySlots = useMemo(() => data ? getTodayCombined(data) : [], [data]);
   const weekExtremes = useMemo(() => data ? getWeekExtremes(data) : null, [data]);
   const weekTemps = useMemo(() => data ? getWeekTemps(data) : [], [data]);
   const absMin = useMemo(() => weekTemps.length ? Math.min(...weekTemps.map((d) => d.min)) : 0, [weekTemps]);
   const absMax = useMemo(() => weekTemps.length ? Math.max(...weekTemps.map((d) => d.max)) : 20, [weekTemps]);
 
   const currentWeatherCode = useMemo(() => data ? getCurrentWeatherCode(data) : null, [data]);
-  const weatherType = codeToType(currentWeatherCode);
+  const night = useMemo(() => data ? isCurrentlyNight(data) : false, [data]);
+  const baseWeatherType = codeToType(currentWeatherCode);
+  const weatherType = night && EFFECT_LAYERS[`${baseWeatherType}-night`] ? `${baseWeatherType}-night` : baseWeatherType;
   const effectLayers = EFFECT_LAYERS[weatherType] || ['clouds'];
 
   const handleCloseManage = useCallback(() => {
@@ -184,13 +185,16 @@ export default function App() {
           {page === 0 && (
             <>
               <div style={getCardTint(weatherType, 0)}>
-                <DogWalkCard walk={walk} />
+                <DogWalkCard walk={walk} walkMinutely={walkMinutely} />
               </div>
               <div style={getCardTint(weatherType, 1)}>
-                <NowCard slots={nowMinutely} />
+                <TodayCard slots={todaySlots} />
               </div>
               <div style={getCardTint(weatherType, 2)}>
-                <Next24Card hours={todayHours} />
+                <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} days={5} />
+              </div>
+              <div style={getCardTint(weatherType, 3)}>
+                <ExtremesCard extremes={weekExtremes} />
               </div>
             </>
           )}
@@ -198,10 +202,7 @@ export default function App() {
           {page === 1 && (
             <>
               <div style={getCardTint(weatherType, 0)}>
-                <ExtremesCard extremes={weekExtremes} />
-              </div>
-              <div style={getCardTint(weatherType, 1)}>
-                <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} />
+                <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} days={10} />
               </div>
             </>
           )}

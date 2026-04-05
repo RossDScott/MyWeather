@@ -1,7 +1,8 @@
 import { WIND_THRESHOLD } from '../utils/constants';
+import ForecastColumn from './ForecastColumn';
 import styles from './DogWalkCard.module.css';
 
-export default function DogWalkCard({ walk }) {
+export default function DogWalkCard({ walk, walkMinutely }) {
   if (!walk) return null;
 
   return (
@@ -39,6 +40,16 @@ export default function DogWalkCard({ walk }) {
             </div>
           </div>
         </div>
+        {walkMinutely && walkMinutely.length > 0 && (
+          <>
+            <hr className={styles.divider} />
+            <div className={`todayScroll ${styles.scroll} hideScrollbar`}>
+              {walkMinutely.map((s, i) => (
+                <ForecastColumn key={i} slot={s} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
