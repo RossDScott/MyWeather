@@ -5,17 +5,20 @@ import TempRange from './TempRange';
 import RainBar from './RainBar';
 import styles from './WeekForecast.module.css';
 
-export default function WeekForecast({ weekTemps, absMin, absMax, data }) {
+export default function WeekForecast({ weekTemps, absMin, absMax, data, days }) {
   const [expandedDay, setExpandedDay] = useState(null);
   const hourly = getHourlyDetail(data, expandedDay);
+  const visibleTemps = days ? weekTemps.slice(0, days) : weekTemps;
 
-  if (!weekTemps.length) return null;
+  if (!visibleTemps.length) return null;
+
+  const title = days ? `${days}-Day Forecast` : '7-Day Forecast';
 
   return (
     <div className={styles.section}>
-      <h2 className={styles.title}>7-Day Forecast</h2>
+      <h2 className={styles.title}>{title}</h2>
       <div className={styles.list}>
-        {weekTemps.map((d, i) => (
+        {visibleTemps.map((d, i) => (
           <div key={i}>
             <div
               className={styles.dayRow}

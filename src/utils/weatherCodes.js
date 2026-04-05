@@ -29,7 +29,16 @@ export const WI = {
   99: { icon: '⛈', label: 'Thunderstorm + heavy hail' },
 };
 
-export const getWeather = (code) => WI[code] || { icon: '❓', label: 'Unknown' };
+const WI_NIGHT = {
+  0: { icon: '🌙', label: 'Clear' },
+  1: { icon: '🌙', label: 'Mostly clear' },
+  2: { icon: '☁️', label: 'Partly cloudy' },
+};
+
+export const getWeather = (code, isNight = false) => {
+  if (isNight && WI_NIGHT[code]) return WI_NIGHT[code];
+  return WI[code] || { icon: '❓', label: 'Unknown' };
+};
 
 export function codeToType(code) {
   if (code == null) return 'overcast';
@@ -44,25 +53,31 @@ export function codeToType(code) {
 }
 
 export const EFFECT_LAYERS = {
-  'clear':         ['sunny'],
-  'mostly-clear':  ['sunny', 'clouds-light'],
-  'partly-cloudy': ['sunny', 'clouds'],
-  'overcast':      ['clouds'],
-  'foggy':         ['fog'],
-  'rainy':         ['rain'],
-  'snowy':         ['snow'],
-  'stormy':        ['rain', 'lightning'],
+  'clear':              ['sunny'],
+  'mostly-clear':       ['sunny', 'clouds-light'],
+  'partly-cloudy':      ['sunny', 'clouds'],
+  'overcast':           ['clouds'],
+  'foggy':              ['fog'],
+  'rainy':              ['rain'],
+  'snowy':              ['snow'],
+  'stormy':             ['rain', 'lightning'],
+  'clear-night':        ['clouds-light'],
+  'mostly-clear-night': ['clouds-light'],
+  'partly-cloudy-night':['clouds'],
 };
 
 export const BG_GRADIENTS = {
-  'clear':         'linear-gradient(180deg, #1a3a5c 0%, #2d6a9f 30%, #f4a942 90%, #e8792e 100%)',
-  'mostly-clear':  'linear-gradient(180deg, #1e3f62 0%, #3572a5 35%, #d4a050 85%, #c8763a 100%)',
-  'partly-cloudy': 'linear-gradient(180deg, #253a52 0%, #3d6d94 35%, #8aa0b5 75%, #b5a57a 100%)',
-  'overcast':      'linear-gradient(180deg, #2a3040 0%, #435063 50%, #5b6577 100%)',
-  'foggy':         'linear-gradient(180deg, #303845 0%, #4a5568 40%, #6b7a8d 70%, #8a95a5 100%)',
-  'rainy':         'linear-gradient(180deg, #252b3b 0%, #3a4559 40%, #4d5a6c 80%, #5a6578 100%)',
-  'snowy':         'linear-gradient(180deg, #2a3040 0%, #4a5568 40%, #8b9bb5 80%, #c4cfe0 100%)',
-  'stormy':        'linear-gradient(180deg, #191f27 0%, #262d3d 30%, #3d2f4d 70%, #4d3a5a 100%)',
+  'clear':              'linear-gradient(180deg, #1a3a5c 0%, #2d6a9f 30%, #f4a942 90%, #e8792e 100%)',
+  'mostly-clear':       'linear-gradient(180deg, #1e3f62 0%, #3572a5 35%, #d4a050 85%, #c8763a 100%)',
+  'partly-cloudy':      'linear-gradient(180deg, #253a52 0%, #3d6d94 35%, #8aa0b5 75%, #b5a57a 100%)',
+  'overcast':           'linear-gradient(180deg, #2a3040 0%, #435063 50%, #5b6577 100%)',
+  'foggy':              'linear-gradient(180deg, #303845 0%, #4a5568 40%, #6b7a8d 70%, #8a95a5 100%)',
+  'rainy':              'linear-gradient(180deg, #252b3b 0%, #3a4559 40%, #4d5a6c 80%, #5a6578 100%)',
+  'snowy':              'linear-gradient(180deg, #2a3040 0%, #4a5568 40%, #8b9bb5 80%, #c4cfe0 100%)',
+  'stormy':             'linear-gradient(180deg, #191f27 0%, #262d3d 30%, #3d2f4d 70%, #4d3a5a 100%)',
+  'clear-night':        'linear-gradient(180deg, #0a0e1a 0%, #121830 40%, #1a2444 80%, #1e2a50 100%)',
+  'mostly-clear-night': 'linear-gradient(180deg, #0c1020 0%, #151d38 40%, #1e2a4a 80%, #243055 100%)',
+  'partly-cloudy-night':'linear-gradient(180deg, #0e1220 0%, #1a2238 40%, #253050 80%, #2a3555 100%)',
 };
 
 const CARD_TINTS = {
