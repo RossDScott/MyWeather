@@ -67,13 +67,13 @@ export const BG_GRADIENTS = {
 
 const CARD_TINTS = {
   'clear': [
-    { '--card-bg': 'linear-gradient(135deg, rgba(40,80,140,0.30) 0%, rgba(40,80,140,0.18) 100%)', '--card-border': 'rgba(60,120,200,0.30)', '--card-blur': '10px' },
     { '--card-bg': 'linear-gradient(135deg, rgba(30,60,120,0.42) 0%, rgba(30,60,120,0.28) 100%)', '--card-border': 'rgba(50,100,180,0.35)', '--card-blur': '12px' },
+    { '--card-bg': 'linear-gradient(135deg, rgba(25,52,110,0.49) 0%, rgba(25,52,110,0.33) 100%)', '--card-border': 'rgba(45,92,170,0.38)', '--card-blur': '13px' },
     { '--card-bg': 'linear-gradient(135deg, rgba(20,45,100,0.55) 0%, rgba(20,45,100,0.38) 100%)', '--card-border': 'rgba(40,85,160,0.40)', '--card-blur': '14px' },
   ],
   'mostly-clear': [
-    { '--card-bg': 'linear-gradient(135deg, rgba(40,80,140,0.28) 0%, rgba(40,80,140,0.16) 100%)', '--card-border': 'rgba(60,120,200,0.28)', '--card-blur': '10px' },
     { '--card-bg': 'linear-gradient(135deg, rgba(30,60,120,0.38) 0%, rgba(30,60,120,0.24) 100%)', '--card-border': 'rgba(50,100,180,0.32)', '--card-blur': '12px' },
+    { '--card-bg': 'linear-gradient(135deg, rgba(25,52,110,0.43) 0%, rgba(25,52,110,0.28) 100%)', '--card-border': 'rgba(45,92,170,0.34)', '--card-blur': '13px' },
     { '--card-bg': 'linear-gradient(135deg, rgba(20,45,100,0.48) 0%, rgba(20,45,100,0.32) 100%)', '--card-border': 'rgba(40,85,160,0.36)', '--card-blur': '14px' },
   ],
   'partly-cloudy': [
