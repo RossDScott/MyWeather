@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchWeatherData } from './utils/api';
-import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps } from './utils/dataHelpers';
+import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps, getCurrentWeatherCode } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS } from './utils/weatherCodes';
 import { loadLocations, saveLocations, loadActiveId, saveActiveId, loadWeatherCache, saveWeatherCache, clearWeatherCache } from './utils/locations';
 import WeatherBackground from './components/WeatherBackground';
@@ -122,7 +122,7 @@ export default function App() {
   const absMin = useMemo(() => weekTemps.length ? Math.min(...weekTemps.map((d) => d.min)) : 0, [weekTemps]);
   const absMax = useMemo(() => weekTemps.length ? Math.max(...weekTemps.map((d) => d.max)) : 20, [weekTemps]);
 
-  const currentWeatherCode = data?.daily?.weather_code?.[0] ?? null;
+  const currentWeatherCode = useMemo(() => data ? getCurrentWeatherCode(data) : null, [data]);
   const weatherType = codeToType(currentWeatherCode);
 
   const handleCloseManage = useCallback(() => {
