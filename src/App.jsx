@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchWeatherData } from './utils/api';
 import { getWalkForecast, getTodayHourly, getNowMinutely, getWeekExtremes, getWeekTemps, getCurrentWeatherCode } from './utils/dataHelpers';
-import { codeToType, BG_GRADIENTS, EFFECT_LAYERS } from './utils/weatherCodes';
+import { codeToType, BG_GRADIENTS, EFFECT_LAYERS, getCardTint } from './utils/weatherCodes';
 import { loadLocations, saveLocations, loadActiveId, saveActiveId, loadWeatherCache, saveWeatherCache, clearWeatherCache } from './utils/locations';
 import WeatherBackground from './components/WeatherBackground';
 import Header from './components/Header';
@@ -183,16 +183,26 @@ export default function App() {
         <div className={styles.pageContainer}>
           {page === 0 && (
             <>
-              <DogWalkCard walk={walk} />
-              <NowCard slots={nowMinutely} />
-              <Next24Card hours={todayHours} />
+              <div style={getCardTint(weatherType, 0)}>
+                <DogWalkCard walk={walk} />
+              </div>
+              <div style={getCardTint(weatherType, 1)}>
+                <NowCard slots={nowMinutely} />
+              </div>
+              <div style={getCardTint(weatherType, 2)}>
+                <Next24Card hours={todayHours} />
+              </div>
             </>
           )}
 
           {page === 1 && (
             <>
-              <ExtremesCard extremes={weekExtremes} />
-              <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} />
+              <div style={getCardTint(weatherType, 0)}>
+                <ExtremesCard extremes={weekExtremes} />
+              </div>
+              <div style={getCardTint(weatherType, 1)}>
+                <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} />
+              </div>
             </>
           )}
         </div>
