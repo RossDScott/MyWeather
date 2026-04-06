@@ -88,6 +88,7 @@
 
 .scroll {
   display: flex;
+  justify-content: center;
   overflow-x: auto;
   padding: 0 6px;
   -webkit-overflow-scrolling: touch;

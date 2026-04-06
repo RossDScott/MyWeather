@@ -53,8 +53,11 @@ export function getWalkMinutely(data) {
   if (now.getHours() >= 12) return [];
   const dateStr = localDateStr(now);
   const slots = [];
-  for (let m = 0; m < 4; m++) {
-    const timeStr = `${dateStr}T12:${pad2(m * 15)}`;
+  for (let m = 0; m < 5; m++) {
+    const minutes = m * 15;
+    const hour = 12 + Math.floor(minutes / 60);
+    const min = minutes % 60;
+    const timeStr = `${dateStr}T${pad2(hour)}:${pad2(min)}`;
     const idx = data.minutely_15.time.findIndex((t) => t === timeStr);
     if (idx === -1) continue;
     slots.push({
