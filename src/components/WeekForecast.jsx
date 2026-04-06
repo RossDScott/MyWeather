@@ -5,10 +5,11 @@ import TempRange from './TempRange';
 import RainBar from './RainBar';
 import styles from './WeekForecast.module.css';
 
-export default function WeekForecast({ weekTemps, absMin, absMax, data, days }) {
+export default function WeekForecast({ weekTemps, absMin, absMax, data, days, skipToday }) {
   const [expandedDay, setExpandedDay] = useState(null);
   const hourly = getHourlyDetail(data, expandedDay);
-  const visibleTemps = days ? weekTemps.slice(0, days) : weekTemps;
+  const start = skipToday ? 1 : 0;
+  const visibleTemps = days ? weekTemps.slice(start, start + days) : weekTemps.slice(start);
 
   if (!visibleTemps.length) return null;
 
@@ -18,18 +19,20 @@ export default function WeekForecast({ weekTemps, absMin, absMax, data, days }) 
     <div className={styles.section}>
       <h2 className={styles.title}>{title}</h2>
       <div className={styles.list}>
-        {visibleTemps.map((d, i) => (
-          <div key={i}>
+        {visibleTemps.map((d, i) => {
+          const dayIdx = i + start;
+          return (
+          <div key={dayIdx}>
             <div
               className={styles.dayRow}
-              style={{ background: expandedDay === i ? 'rgba(255,255,255,0.06)' : 'transparent' }}
-              onClick={() => setExpandedDay(expandedDay === i ? null : i)}
+              style={{ background: expandedDay === dayIdx ? 'rgba(255,255,255,0.06)' : 'transparent' }}
+              onClick={() => setExpandedDay(expandedDay === dayIdx ? null : dayIdx)}
             >
               <div className={styles.dayLeft}>
                 <span className={styles.dayIcon}>{d.weather.icon}</span>
                 <div>
                   <span className={styles.dayName}>
-                    {i === 0 ? 'Today' : d.day}
+                    {dayIdx === 0 ? 'Today' : d.day}
                   </span>
                   <div className={styles.dayMetaRow}>
                     <span className={styles.dayMeta}>💧 {d.rainChance}%</span>
@@ -45,7 +48,7 @@ export default function WeekForecast({ weekTemps, absMin, absMax, data, days }) 
               <TempRange min={d.min} max={d.max} absMin={absMin} absMax={absMax} />
             </div>
 
-            {expandedDay === i && hourly.length > 0 && (
+            {expandedDay === dayIdx && hourly.length > 0 && (
               <div className={styles.hourlyWrap}>
                 {hourly
                   .filter((_, hi) => hi % 2 === 0)
@@ -69,7 +72,8 @@ export default function WeekForecast({ weekTemps, absMin, absMax, data, days }) 
               </div>
             )}
           </div>
-        ))}
+        );
+        })}
       </div>
     </div>
   );
