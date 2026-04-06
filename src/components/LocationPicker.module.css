@@ -44,6 +44,14 @@
   font-size: 15px;
 }
 
+.gpsName {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #5b9cf5;
+}
+
 .dot {
   width: 8px;
   height: 8px;

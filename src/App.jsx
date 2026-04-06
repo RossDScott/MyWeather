@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { fetchWeatherData } from './utils/api';
+import { fetchWeatherData, reverseGeocode, getDistanceKm } from './utils/api';
 import { getWalkForecast, getWalkMinutely, getTodayCombined, getWeekExtremes, getWeekTemps, getCurrentWeatherCode, isCurrentlyNight } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS, EFFECT_LAYERS, getCardTint } from './utils/weatherCodes';
 import { loadLocations, saveLocations, loadActiveId, saveActiveId, loadWeatherCache, saveWeatherCache, clearWeatherCache } from './utils/locations';
@@ -16,6 +16,8 @@ import styles from './App.module.css';
 
 const PAGES = 2;
 const CACHE_MAX_AGE = 15 * 60 * 1000; // 15 minutes
+const CURRENT_LOCATION_ID = '__current__';
+const PROXIMITY_THRESHOLD_KM = 25;
 
 export default function App() {
   const [locations, setLocations] = useState(loadLocations);
@@ -25,8 +27,10 @@ export default function App() {
     if (locs.length === 0) return null;
     return saved && locs.find((l) => l.id === saved) ? saved : locs[0].id;
   });
+  const [currentGpsLocation, setCurrentGpsLocation] = useState(null);
+  const [geoChecking, setGeoChecking] = useState(true);
   const [showPicker, setShowPicker] = useState(false);
-  const [showManage, setShowManage] = useState(() => loadLocations().length === 0);
+  const [showManage, setShowManage] = useState(false);
 
   const [data, setData] = useState(() => {
     if (!activeId) return null;
@@ -41,7 +45,53 @@ export default function App() {
   const [page, setPage] = useState(0);
   const touchRef = useRef({ startX: 0, startY: 0, inScroller: false });
 
-  const activeLocation = locations.find((l) => l.id === activeId) || locations[0] || null;
+  const activeLocation = useMemo(() => {
+    if (activeId === CURRENT_LOCATION_ID && currentGpsLocation) return currentGpsLocation;
+    return locations.find((l) => l.id === activeId) || locations[0] || null;
+  }, [activeId, locations, currentGpsLocation]);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setGeoChecking(false);
+      if (loadLocations().length === 0) setShowManage(true);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = Math.round(pos.coords.latitude * 10000) / 10000;
+        const lon = Math.round(pos.coords.longitude * 10000) / 10000;
+        const locs = loadLocations();
+
+        // Find the nearest saved location
+        let nearest = null;
+        let nearestDist = Infinity;
+        for (const loc of locs) {
+          const dist = getDistanceKm(lat, lon, loc.latitude, loc.longitude);
+          if (dist < nearestDist) { nearestDist = dist; nearest = loc; }
+        }
+
+        if (nearest && nearestDist < PROXIMITY_THRESHOLD_KM) {
+          setActiveId(nearest.id);
+          saveActiveId(nearest.id);
+        } else {
+          try {
+            const name = await reverseGeocode(lat, lon);
+            setCurrentGpsLocation({ id: CURRENT_LOCATION_ID, name, latitude: lat, longitude: lon });
+            setActiveId(CURRENT_LOCATION_ID);
+            // Don't persist '__current__' to localStorage
+          } catch {
+            if (locs.length === 0) setShowManage(true);
+          }
+        }
+        setGeoChecking(false);
+      },
+      () => {
+        setGeoChecking(false);
+        if (loadLocations().length === 0) setShowManage(true);
+      },
+      { timeout: 10000 }
+    );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchData = useCallback(async () => {
     if (!activeLocation) return;
@@ -50,7 +100,9 @@ export default function App() {
     setData(json);
     if (json) {
       setLastUpdated(new Date());
-      saveWeatherCache(activeLocation.id, json);
+      if (activeLocation.id !== CURRENT_LOCATION_ID) {
+        saveWeatherCache(activeLocation.id, json);
+      }
     }
     setLoading(false);
   }, [activeLocation]);
@@ -85,7 +137,7 @@ export default function App() {
 
   const handleSelectLocation = useCallback((id) => {
     setActiveId(id);
-    saveActiveId(id);
+    if (id !== CURRENT_LOCATION_ID) saveActiveId(id);
     setShowPicker(false);
   }, []);
 
@@ -137,8 +189,20 @@ export default function App() {
     }
   }, [activeId, locations]);
 
+  // Still checking geolocation and no location available yet — show loading
+  if (geoChecking && !activeLocation) {
+    return (
+      <div className={styles.shell} style={{ background: BG_GRADIENTS.overcast }}>
+        <div className={styles.loader}>
+          <div className={styles.spinner} />
+          <p className={styles.loadingText}>Detecting location…</p>
+        </div>
+      </div>
+    );
+  }
+
   // No location set — show manage screen
-  if (!activeLocation || locations.length === 0) {
+  if (!activeLocation) {
     return (
       <div className={styles.shell} style={{ background: BG_GRADIENTS.overcast }}>
         <ManageLocations
@@ -215,6 +279,7 @@ export default function App() {
         <LocationPicker
           locations={locations}
           activeId={activeId}
+          currentGpsLocation={currentGpsLocation}
           onSelect={handleSelectLocation}
           onManage={() => setShowManage(true)}
           onClose={() => setShowPicker(false)}
