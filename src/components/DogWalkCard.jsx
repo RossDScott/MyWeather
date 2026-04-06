@@ -1,15 +1,22 @@
+import { useState } from 'react';
 import { WIND_THRESHOLD } from '../utils/constants';
 import ForecastColumn from './ForecastColumn';
 import styles from './DogWalkCard.module.css';
 
 export default function DogWalkCard({ walk, walkMinutely }) {
+  const [showDetail, setShowDetail] = useState(false);
+
   if (!walk) return null;
 
   return (
     <div className={styles.section}>
       <h2 className={styles.title}>🐕 {walk.label} · {walk.time}</h2>
       <div className={styles.card}>
-        <div className={styles.row}>
+        <div
+          className={styles.row}
+          style={{ background: showDetail ? 'rgba(255,255,255,0.06)' : 'transparent' }}
+          onClick={() => setShowDetail(!showDetail)}
+        >
           <div className={styles.left}>
             <span className={styles.icon}>{walk.weather.icon}</span>
             <div>
@@ -40,7 +47,7 @@ export default function DogWalkCard({ walk, walkMinutely }) {
             </div>
           </div>
         </div>
-        {walkMinutely && walkMinutely.length > 0 && (
+        {showDetail && walkMinutely && walkMinutely.length > 0 && (
           <>
             <hr className={styles.divider} />
             <div className={`todayScroll ${styles.scroll} hideScrollbar`}>
