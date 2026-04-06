@@ -191,7 +191,7 @@ export default function App() {
                 <TodayCard slots={todaySlots} />
               </div>
               <div style={getCardTint(weatherType, 2)}>
-                <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} days={5} />
+                <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} days={3} skipToday />
               </div>
               <div style={getCardTint(weatherType, 3)}>
                 <ExtremesCard extremes={weekExtremes} />
