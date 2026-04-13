@@ -252,7 +252,7 @@ export default function App() {
                 <DogWalkCard walk={walk} walkMinutely={walkMinutely} />
               </div>
               <div style={getCardTint(weatherType, 1)}>
-                <TodayCard slots={todaySlots} />
+                <TodayCard slots={todaySlots} daily={weekTemps[0]} />
               </div>
               <div style={getCardTint(weatherType, 2)}>
                 <WeekForecast weekTemps={weekTemps} absMin={absMin} absMax={absMax} data={data} days={3} skipToday />
