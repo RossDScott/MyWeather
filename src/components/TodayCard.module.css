@@ -25,3 +25,40 @@
   padding: 0 6px;
   -webkit-overflow-scrolling: touch;
 }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 10px;
+  font-size: 15px;
+}
+
+.headerTemps {
+  display: flex;
+  align-items: baseline;
+}
+
+.headerMin {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.headerSep {
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 2px;
+}
+
+.headerMax {
+  color: #fff;
+  font-weight: 600;
+}
+
+.headerWind {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0 12px 10px;
+}
