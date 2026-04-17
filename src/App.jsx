@@ -3,8 +3,10 @@ import { fetchWeatherData, reverseGeocode, getDistanceKm } from './utils/api';
 import { getWalkForecast, getWalkMinutely, getTodayCombined, getWeekExtremes, getWeekTemps, getCurrentWeatherCode, isCurrentlyNight } from './utils/dataHelpers';
 import { codeToType, BG_GRADIENTS, EFFECT_LAYERS, getCardTint } from './utils/weatherCodes';
 import { loadLocations, saveLocations, loadActiveId, saveActiveId, loadWeatherCache, saveWeatherCache, clearWeatherCache } from './utils/locations';
+import { loadConfig } from './utils/config';
 import WeatherBackground from './components/WeatherBackground';
 import Header from './components/Header';
+import ConfigPage from './components/ConfigPage';
 import DogWalkCard from './components/DogWalkCard';
 import TodayCard from './components/TodayCard';
 import ExtremesCard from './components/ExtremesCard';
@@ -31,6 +33,8 @@ export default function App() {
   const [geoChecking, setGeoChecking] = useState(true);
   const [showPicker, setShowPicker] = useState(false);
   const [showManage, setShowManage] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [config, setConfig] = useState(loadConfig);
 
   const [data, setData] = useState(() => {
     if (!activeId) return null;
@@ -165,8 +169,8 @@ export default function App() {
     }
   }, [page]);
 
-  const walk = useMemo(() => data ? getWalkForecast(data) : null, [data]);
-  const walkMinutely = useMemo(() => data ? getWalkMinutely(data) : [], [data]);
+  const walk = useMemo(() => data ? getWalkForecast(data, config.walkStartHour) : null, [data, config.walkStartHour]);
+  const walkMinutely = useMemo(() => data ? getWalkMinutely(data, config.walkStartHour) : [], [data, config.walkStartHour]);
   const todaySlots = useMemo(() => data ? getTodayCombined(data) : [], [data]);
   const weekExtremes = useMemo(() => data ? getWeekExtremes(data) : null, [data]);
   const weekTemps = useMemo(() => data ? getWeekTemps(data) : [], [data]);
@@ -243,6 +247,7 @@ export default function App() {
           lastUpdated={lastUpdated}
           onRefresh={fetchData}
           onLocationTap={() => setShowPicker(true)}
+          onConfigTap={() => setShowConfig(true)}
         />
 
         <div className={styles.pageContainer}>
@@ -293,6 +298,14 @@ export default function App() {
           onChange={handleUpdateLocations}
           onActiveChange={handleActiveChange}
           onClose={handleCloseManage}
+        />
+      )}
+
+      {showConfig && (
+        <ConfigPage
+          config={config}
+          onConfigChange={setConfig}
+          onClose={() => setShowConfig(false)}
         />
       )}
     </div>

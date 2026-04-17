@@ -1,0 +1,82 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  background: #0f1724;
+  z-index: 300;
+  overflow: auto;
+  font-family: 'DM Sans', sans-serif;
+  color: #fff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.headerTitle {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.doneBtn {
+  background: none;
+  border: none;
+  color: #5b9cf5;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.section {
+  padding: 24px 20px 8px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.rowLabel {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.select {
+  background: rgba(91, 156, 245, 0.15);
+  border: 1px solid rgba(91, 156, 245, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 6px 10px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 72px;
+  text-align: center;
+}
+
+.select option {
+  background: #1a2535;
+  color: #fff;
+}
