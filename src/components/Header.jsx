@@ -1,6 +1,6 @@
 import styles from './Header.module.css';
 
-export default function Header({ locationName, lastUpdated, onRefresh, onLocationTap }) {
+export default function Header({ locationName, lastUpdated, onRefresh, onLocationTap, onConfigTap }) {
   return (
     <div className={styles.header}>
       <p className={styles.location} onClick={onLocationTap} style={{ cursor: 'pointer' }}>
@@ -14,6 +14,9 @@ export default function Header({ locationName, lastUpdated, onRefresh, onLocatio
         )}
         <button onClick={onRefresh} className={styles.refreshBtn} title="Refresh">
           ↻
+        </button>
+        <button onClick={onConfigTap} className={styles.configBtn} title="Settings">
+          ⚙
         </button>
       </div>
     </div>

@@ -27,12 +27,19 @@ export function isCurrentlyNight(data) {
   return isNightTime(nowStr, data);
 }
 
-export function getWalkForecast(data) {
+function formatHour12(h) {
+  if (h === 0) return '12am';
+  if (h === 12) return '12pm';
+  if (h > 12) return `${h - 12}pm`;
+  return `${h}am`;
+}
+
+export function getWalkForecast(data, walkStartHour = 12) {
   if (!data?.hourly) return null;
   const now = new Date();
   const targetDate = new Date(now);
-  targetDate.setHours(12, 0, 0, 0);
-  if (now.getHours() >= 12) return null;
+  targetDate.setHours(walkStartHour, 0, 0, 0);
+  if (now.getHours() >= walkStartHour) return null;
   const targetStr = localDateHourStr(targetDate);
   const idx = data.hourly.time.findIndex((t) => t.startsWith(targetStr));
   if (idx === -1) return null;
@@ -43,19 +50,19 @@ export function getWalkForecast(data) {
     rainChance: data.hourly.precipitation_probability[idx],
     wind: Math.round(data.hourly.wind_speed_10m[idx]),
     weather: getWeather(weatherCode, isNightTime(data.hourly.time[idx], data)),
-    time: '12pm\u20131pm',
+    time: `${formatHour12(walkStartHour)}\u2013${formatHour12(walkStartHour + 1)}`,
   };
 }
 
-export function getWalkMinutely(data) {
+export function getWalkMinutely(data, walkStartHour = 12) {
   if (!data?.minutely_15) return [];
   const now = new Date();
-  if (now.getHours() >= 12) return [];
+  if (now.getHours() >= walkStartHour) return [];
   const dateStr = localDateStr(now);
   const slots = [];
   for (let m = 0; m < 5; m++) {
     const minutes = m * 15;
-    const hour = 12 + Math.floor(minutes / 60);
+    const hour = walkStartHour + Math.floor(minutes / 60);
     const min = minutes % 60;
     const timeStr = `${dateStr}T${pad2(hour)}:${pad2(min)}`;
     const idx = data.minutely_15.time.findIndex((t) => t === timeStr);
