@@ -19,7 +19,7 @@ import styles from './App.module.css';
 const PAGES = 2;
 const CACHE_MAX_AGE = 15 * 60 * 1000; // 15 minutes
 const CURRENT_LOCATION_ID = '__current__';
-const PROXIMITY_THRESHOLD_KM = 25;
+const PROXIMITY_THRESHOLD_KM = 5;
 
 export default function App() {
   const [locations, setLocations] = useState(loadLocations);
