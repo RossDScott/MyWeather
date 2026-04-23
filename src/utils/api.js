@@ -12,12 +12,16 @@ function buildApiUrl(lat, lon) {
 }
 
 export async function fetchWeatherData(lat, lon) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
   try {
-    const res = await fetch(buildApiUrl(lat, lon));
+    const res = await fetch(buildApiUrl(lat, lon), { signal: controller.signal });
     if (!res.ok) throw new Error(`API error ${res.status}`);
     return await res.json();
   } catch {
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
